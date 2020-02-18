@@ -1,32 +1,52 @@
-#!/bin/bash -x
+!/bin/bash -x
 
-echo Welcome
-#checking the coin flip is either heads or tails
-read -p "Enter the number you want to flip the coin:" number
-#declareing a dictionary to store the count
-declare -A coin
-ISHEAD=1
-heads=0
-tails=0
-for (( count=0; count<number; count++))
-do
-	coinCheck=$(( RANDOM%2 ))
-	if (( $ISHEAD == $coinCheck ))
-	then
-		echo "Heads"
-		coin[$count]=H
-		((heads++))
-	else
-		echo "Tails"
-		coin[$count]=T
-		((tails++))
-fi
-done
-echo "heads-$heads"
-echo "tails-$tails"
-echo ${coin[@]}
-#calculating the percentage of heads and tails
-percentageOfHeads=`echo "scale=4;$heads/$number*100" | bc`"%"
-echo "pecentage of heads is: $percentageOfHeads"
-percentageOfTails=`echo "scale=4;$tails/$number*100" | bc`"%"
-echo "pecentage of tails is: $percentageOfTails"
+#constant
+ISFLIP=0
+DOUBLET=2
+
+# dictionar to store doublet combination of flip coin
+declare -A doubletFlip
+#taking user input for number of coin flips
+read -p "Enter the Number of Coin Flip : " numberOfCoinFlip
+
+#storing combine value in dictionary
+function coinFlip()
+{
+	local NUMBER_OF_COIN=$1
+	for(( flip=0; flip<$numberOfCoinFlip; flip++ ))
+	do
+		for(( coin=0; coin<$NUMBER_OF_COIN; coin++ ))
+		do
+			randomFlip=$(( RANDOM % 2 ))
+			if (($randomFlip == $ISFLIP ))
+			then
+				echo "H"
+				coinSide+=H
+			else
+				echo "T"
+				coinSide+=T
+			fi
+		done
+				((doubletFlip[$coinSide]++))
+				coinSide=""
+	done
+}
+
+#calculating percentage 
+function calculatePercentage()
+{
+	local NUMBER_OF_COIN=$1
+	for countOfIndex in ${!doubletFlip[@]}
+	do
+		doubletFlip[$countOfIndex]=`echo "scale=2; ${doubletFlip[$countOfIndex]}/$numberOfCoinFlip*100" | bc`
+	done
+		echo ${doubletFlip[@]}
+}
+coinFlip $DOUBLET
+echo ${!doubletFlip[@]}
+#echo ${doubletFlip[@]}
+result1=$(calculatePercentage $numberOfCoinFlip)
+#echo "percentage:$result1"
+
+
+
