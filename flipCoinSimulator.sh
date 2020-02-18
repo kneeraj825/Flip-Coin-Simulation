@@ -44,9 +44,7 @@ function calculatePercentage()
 }
 coinFlip $DOUBLET
 echo ${!doubletFlip[@]}
-#echo ${doubletFlip[@]}
 result1=$(calculatePercentage $numberOfCoinFlip)
-#echo "percentage:$result1"
 
 
 
